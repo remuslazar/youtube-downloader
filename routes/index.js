@@ -9,9 +9,19 @@ router.get('/', function(req, res, next) {
   if (req.query.url) {
     var url = req.query.url
     if (req.query.download) {
-      var video = ytdl(url)
+      var filter = null
+
+      switch(req.query.download) {
+        case 'aac': // only aac audio
+        filter = function(format) {
+          return (!format.encoding && format.audioEncoding === 'aac')
+        }
+      }
+
+      var video = ytdl(url, { filter: filter } )
       video.on('info', function(info, format) {
-        res.attachment(info.title+'.'+format.container)
+        // if it's not a video (encoding === null) so we know that it has to be an aac audio => m4a ext
+        res.attachment(info.title+'.' + (format.encoding ? format.container : 'm4a'))
         res.type(format.type)
         res.setHeader('Content-Length', format.size)
       })

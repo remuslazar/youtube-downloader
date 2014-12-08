@@ -14,3 +14,5 @@ block content
       img(src=info.thumbnail_url)
     p
       a.btn.btn-primary(href="/?"+qs.stringify({url: url, download: true})) Download Video
+    p
+      a.btn.btn-primary(href="/?"+qs.stringify({url: url, download: 'aac'})) Download Audio (AAC)
