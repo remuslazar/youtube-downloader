@@ -1,0 +1,17 @@
+{
+  "name": "youtube-downloader",
+  "version": "0.0.1",
+  "authors": [
+    "Remus Lazar <remus@lazar.info>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {}
+}

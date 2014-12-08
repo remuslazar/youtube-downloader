@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  form(role="form")
+    div.form-group
+      label(for="youtube-url") YouTube URL
+      input.form-control#youtube-url(name="url", type="text", placeholder="YouTube URL, e.g. http://www.youtube.com/watch?v=A02s8omM_hI",value=url)
+    button.btn.btn-default(type="submit") Submit
+  if info
+    h2= info.title
+    h4 Author: #{info.author}
+    p
+      img(src=info.thumbnail_url)
+    p
+      a.btn.btn-primary(href="/?"+qs.stringify({url: url, download: true})) Download Video
