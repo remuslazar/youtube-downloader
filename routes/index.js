@@ -4,6 +4,7 @@ var querystring = require('querystring')
 var ytdl = require('ytdl-core')
 var ffmpeg = require('fluent-ffmpeg')
 var ffmpegPath = require('ffmpeg-bin').ffmpeg
+var util = require('util')
 
 router.get('/', function(req, res, next) {
   res.locals.url = req.query.url
@@ -35,18 +36,25 @@ router.get('/', function(req, res, next) {
       })
 
       if (req.query.download === 'audio') {
-        // convert the aac stream on the fly using ffmpeg
-        var proc = ffmpeg(stream)
+        switch (req.query.format) {
+
+        case 'mp3':
+          // convert the aac stream on the fly using ffmpeg
+          ffmpeg(stream)
             .setFfmpegPath(ffmpegPath)
-            .audioCodec(req.query.format === 'mp3' ? 'libmp3lame' : 'libfdk_aac')
-            .format(req.query.format === 'mp3' ? 'mp3' : 'aac')
+            .audioCodec('libmp3lame')
+            .format('mp3')
             .audioQuality(req.query.quality)
             .output(res)
             .on('error', function(err) {
-              console.log('Cannot process stream with ffmpeg: ' + err.message);
-              //res.end()
+              next(new Error('Cannot process stream with ffmpeg: ' + err.message))
             })
             .run()
+          break;
+
+        default:
+          return next(new Error(util.format('Audio Output Format: %s is not implemented', req.query.format)))
+        }
       } else // directly output the raw stream
         stream.pipe(res)
     } else {
