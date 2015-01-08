@@ -6,13 +6,47 @@ block content
       label(for="youtube-url") YouTube URL
       input.form-control#youtube-url(name="url", type="text", placeholder="YouTube URL, e.g. http://www.youtube.com/watch?v=A02s8omM_hI",value=url)
     button.btn.btn-default(type="submit") Submit
+
   if info
     h2= info.title
     h4 Author: #{info.author}
     p= info.description
     p
-      img(src=info.thumbnail_url)
-    p
-      a.btn.btn-primary(href="/?"+qs.stringify({url: url, download: true})) Download Video
-    p
-      a.btn.btn-primary(href="/?"+qs.stringify({url: url, download: 'aac'})) Download Audio (AAC)
+      img(src=info.iurlhq).img-responsive.img-thumbnail
+    h4 Video (and Audio)
+    form(role="form",action="/",method="GET")
+      input(type="hidden",name="url",value=url)
+      input(type="hidden",name="download",value="video")
+      div.row
+        div.form-group.col-sm-7
+          label Resolution/Quality/Size
+            select(name="itag").form-control
+              for format in info.formats.filter(function(e) { return e.encoding && e.audioEncoding })
+                option(value=format.itag) #{format.resolution} #{format.encoding} #{format.quality} #{format.clen ? " ("+Math.round(format.clen/1024/1024)+"MB)" : ""}
+        div.form-group.col-sm-3
+          label Process
+            input(type="submit",value="Download Video").btn.btn-primary.form-control
+
+    - var audioFormats = info.formats.filter(function(e) { return !e.resolution && e.audioEncoding === 'aac' })
+    if audioFormats.length > 0
+      h4 Audio Only
+      form(role="form",action="/",method="GET")
+        - var audioFormat = audioFormats[0]
+        input(type="hidden",name="url",value=url)
+        input(type="hidden",name="download",value="audio")
+        input(type="hidden",name="itag",value=audioFormat.itag)
+        div.row
+          div.form-group.col-sm-3
+            label Format
+              select(name="format").form-control
+                option(value="mp3") MP3
+                option(value="aac") AAC
+          div.form-group.col-sm-4
+            label Quality
+              select(name="quality").form-control
+                option(value=7) Low (VBR, Radio 80kb)
+                option(value=4,selected="selected") Default (VBR, 128kb)
+                option(value=0) Highest (VBR, 256kb)
+          div.form-group.col-sm-3
+            label Process
+              input(type="submit",value="Download Audio").btn.btn-primary.form-control

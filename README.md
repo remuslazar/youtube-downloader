@@ -5,8 +5,9 @@ Basically this is just a playground / proof-of-concept to play with
 the streaming [node-ytdl-core](https://github.com/fent/node-ytdl-core)
 npm module.
 
-This application allows you to download the YouTube media-file in the
-highest available quality from YouTube and use it offline.
+This application allows you to download the video stream or the audio
+only stream. The later can can be converted (transcoded) to various
+formats and compression presets using ffmpeg.
 
 Setup
 -----
@@ -14,6 +15,7 @@ Setup
 Just do a `npm install` and call `gulp` or, if you like make, just
 call `make`.
 
+Do also make sure that the ffmpeg binary is up-and-running.
 
 Deploy
 ------
