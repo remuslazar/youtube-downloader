@@ -36,8 +36,8 @@ router.get('/', function(req, res, next) {
       if (req.query.download === 'audio') {
         // convert the aac stream on the fly using ffmpeg
         var proc = ffmpeg(stream)
-            .audioCodec('libmp3lame')
-            .format('mp3')
+            .audioCodec(req.query.format === 'mp3' ? 'libmp3lame' : 'libfdk_aac')
+            .format(req.query.format === 'mp3' ? 'mp3' : 'aac')
             .audioQuality(req.query.quality)
             .output(res)
             .on('error', function(err) {
