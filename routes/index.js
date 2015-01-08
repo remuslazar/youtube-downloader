@@ -3,6 +3,7 @@ var router = express.Router()
 var querystring = require('querystring')
 var ytdl = require('ytdl-core')
 var ffmpeg = require('fluent-ffmpeg')
+var ffmpegPath = require('ffmpeg-bin').ffmpeg
 
 router.get('/', function(req, res, next) {
   res.locals.url = req.query.url
@@ -36,6 +37,7 @@ router.get('/', function(req, res, next) {
       if (req.query.download === 'audio') {
         // convert the aac stream on the fly using ffmpeg
         var proc = ffmpeg(stream)
+            .setFfmpegPath(ffmpegPath)
             .audioCodec(req.query.format === 'mp3' ? 'libmp3lame' : 'libfdk_aac')
             .format(req.query.format === 'mp3' ? 'mp3' : 'aac')
             .audioQuality(req.query.quality)
